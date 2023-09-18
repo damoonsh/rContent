@@ -1,0 +1,121 @@
+---
+title: "Introduction to Dataframes"
+author: "TRSM Bootcamps R Team"
+output: pdf_document
+---
+
+## Some tips:
+1. If concepts do not make sense, be sure to ask questions.
+2. If you do not understand the concepts after asking, follow along and it will either eventually make sense or we can explain it in detail for you during a break/breakout room.
+3. Lines starting with "##" represent the result of the code that was ran.
+
+# What is a dataframe? 
+
+- Table of row and columns
+- Named spreadsheet
+- A data frame is a list of variables of the same number of row with unique row names, given class data.frame.
+- Each column can have different data types (numerical or strings) 
+
+**Note**: In a dataframe, rows are called ***records*** and columns are called ***variables***.
+
+```{r}
+d <- data.frame(courses=c("ECN340", "MTH108", "CPS109", "ECN702", "ITM320"), 
+                rates=c(9.7, 5.4, 7.8, 6.5, 8.9))
+d
+```
+
+## Importing Dataframes 
+- Use read_csv function from tidyverse package to import dataframes
+```{r message=FALSE}
+# Open the tidyverse package
+library(tidyverse) 
+
+# Import the dataframe and assign it a name
+housing_df <- read_csv("https://www.dropbox.com/s/tvvtf9dwjufo7os/housing_train.csv?dl=1") 
+```
+
+## Indexing with Dataframes 
+- Indexing is simple way of splicing a dataset so that only particular row or columns are displayed
+- For those experienced with Python, indexing starts at 1 in R instead of 0
+  * d[1:3,] -> rows 1 to 3, all columns
+  * d[1:4, 2] -> rows 1 to 4 in only the second column
+  * d[1, 1] -> first row, first column
+  * d[c(10,2,34)] -> Gets rows 10, 2, and 34 in that order with all the columns
+  * d[1:3, Col1] -> displays rows 1 to 3 for Col1 column
+  * d[1:5, c(Col1, Col2, Col3)] -> displays rows 1 to 5 cols=[Col1, Col2, Col3]
+ 
+**Exercises**:
+
+1. Retrieve rows 10 to 15 of the first 5 columns in housing_df.
+2. Display the value in the thirty-fifth row of the eighteenth column of housing_df. 
+3. Get rows [200, 13, 45, 9] for columns PoolArea, WoodDeckSF, MoSold, and Fence.
+
+```{r}
+# 1: housing_df[1:15, 1:5]
+
+# 2: housing_df[35, 18]
+
+# 3: housing_df(c(200,13,45,9), [PoolArea, WoodDeckSF, MoSold, ,Fence])
+```
+
+# Exploring dataframes 
+- **unique(df$column_name)**: returns the unique values in the column of a dataframe
+
+```{r}
+unique(d$courses)
+```
+
+- **nrow(df$column_name)**: returns the number of rows
+
+```{r}
+nrow(d)
+```
+- **ncol(df$column_name)**: returns the number of cols
+
+```{r}
+ncol(d)
+```
+- **View(df)**: shows the dataframe in a spreadsheet
+
+```{r eval=FALSE}
+View(housing_df)
+```
+
+- **sd(df$column_name, na.rm=T)**: Standard deviation of the column
+  * There might be missing values in the given column
+  * na.rm = T will ***exclude*** the missing values and compute Standard Deviation
+
+```{r}
+# This will result in NA
+sd(housing_df$LotFrontage)
+
+# This one excludes the missing values (NA)
+sd(housing_df$LotFrontage, na.rm = T)
+```
+
+- **mean(df$column_name, na.rm = T)**: Mean of the column
+  * There might be missing values in the given column
+  * na.rm = T will ***exclude*** the missing values and compute mean
+
+```{r}
+# This will result in NA
+mean(housing_df$LotFrontage)
+
+# This one excludes the missing values (NA)
+mean(housing_df$LotFrontage, na.rm = T)
+```
+
+**Exercise**:
+
+1. What is the average of SalePrice column in housing_df?
+2. How many rows and columns does the housing_df have?
+3. How many unique values are in the ***MSSubClass*** column? (CHALLENGE: Try and see if you can use a second function to sell you the total number instead of counting)
+```{r}
+# 1: mean(housing_df$SalePrice)
+
+# 2: use nrow and ncol
+
+# 3: length(unique(housing_df$MSSubClass))
+
+# 4: mean(hou)
+```

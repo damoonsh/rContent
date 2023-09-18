@@ -1,0 +1,191 @@
+---
+title: "Wrangling with Dataframes"
+author: "TRSM R Bootcamp"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+# Introduction
+Being able to manipulate data is an important skill needed for any kind of analysis. In this section, various functions are introduced to demonstrate several techniques and common practices for working with data. While exploring dataframes, various techniques related to plotting will be introduced as well.
+
+Some useful functions will be introduced to wrangle data. Additionally, pipes are introduced to make it easier to manipulate data.
+
+## Table of content
+
+  1. select
+  2. filter
+  3. mutate
+  4. Pipes
+  5. arrange
+
+**Setup**: Importing libraries and datasets needed through the session.
+
+```{r message=FALSE}
+# Set up:
+library(ggplot2)
+library(tidyverse)
+
+# Creating dataframes using data.frame() object
+courses <- c("ECN340", "MTH108", "CPS109", "ECN702", "ITM320")
+rates <- c(9.7, 5.4, 7.8, 6.5, 8.9)
+# Course Rating dataframe
+d <- data.frame(courses, rates)
+
+# Importing the housing dataframe
+housing_df <- read_csv("https://www.dropbox.com/s/tvvtf9dwjufo7os/housing_train.csv?dl=1")
+
+# Subset of housing_df to make it easier to run in console
+df <- housing_df[1:6, c("SalePrice", "MSSubClass", "MSZoning", "LotFrontage")]
+
+playground <- read_csv("https://www.dropbox.com/s/1zz4a82514avdeq/playground_injuries.csv?dl=1")
+
+```
+
+
+# 1. Select
+  
+  - Selecting specific columns using either names or index columns
+  - **select(df, A, B ,C)**: Get columns A, B, and C from the dataframe df
+  
+```{r}
+# Selecting "SalePrice" and "MSSubClass" columns
+select(df, SalePrice, MSSubClass)
+```
+  
+  - **select(df, A:C)**: Select all variables from A to C from df dataset.
+
+```{r}
+# Selecting columns from MSSubClass to LotFrontage
+select(df, MSSubClass:LotFrontage)
+```
+
+  - **select(df, A:F, -C)**: All columns from to A to F excluding C
+
+```{r}
+# Selecting columns from MSSubClass to LotFrontage excluding MSZoning
+select(df, MSSubClass:LotFrontage, -MSZoning)
+```
+
+  - **select(df, contains(str))**: Columns that contain str in their name
+
+```{r}
+# Selecting all the columns where there contain bsmt in their name
+select(housing_df[1:5,], contains("bsmt"))
+```
+
+**Exercise**: Use selection to get the following subsets
+  
+  1. 7th to 12th Column
+  2. 7th to 12th Column excluding columns 8 and Alley
+  3. Columns GarageType to GarageCond
+  4. Columns GarageType to GarageCond exclusive (excluding GarageType and GarageCond)
+  5. Columns with bsmt in their names
+
+# 2. Filter
+
+  * **filter(df, condition)**:
+    - df: dataset used to filter the data
+    - condition: Condition used to filter the data
+    
+  * **multiple conditions**:
+    - filter(df, condition1 | condition2)
+    - filter(df, condition1 & condition2)
+    
+  **Note**: Negation is also possible within this notation.
+
+```{r}
+# Filter for houses with over a 3 in overall quality
+filter(select(housing_df[1:5,], BldgType:YearBuilt), OverallQual > 3 )
+```
+
+```{r}
+# Filter for houses with above median sale prices
+filter(df, SalePrice > median(SalePrice))
+```
+
+**Exercises**:
+
+  1. Choose rows with MSSubclass of higher than 20
+  2. MSSubclass of higher than 20 and SalePrice below average
+  3. MSSubclass anything but 60, not a Low LandContour
+  4. Entries where SalePrice is higher than average or Neighborhood is BrDale
+
+# 3. Mutate: 
+  
+  - Mutating entries within the dataframe
+  - **General Structure**: mutate(df, new_column=operation(column1, column2, ...))
+  
+```{r}
+# Adding log_sale_price column which is the log of the SalePrice columns
+housing_df <- mutate(housing_df, log_sale_price = log(SalePrice))
+# Create a new column in housing_df called **total_sf** which adds the square feet the basement, first, and second floor.
+housing_df <- mutate(housing_df, total_sf =  TotalBsmtSF + `1stFlrSF`  + `2ndFlrSF` )
+```
+
+# 4. Pipes 
+Run the series of commands below to obtain a dataframe containing columns SalePrice ,log_SalePrice, and MSZoning Where the SalePrice values are greater than the average of SalePrice value.
+```{r}
+# 3 steps:
+# Select SalePrice and MSZoning columns
+step1 <- select(df, SalePrice, MSZoning) 
+# Keep rows where SalePrice is higher than the average
+step2 <- filter(step1, SalePrice > mean(SalePrice)) 
+# Make a new column called log_SalePrice where it is the log of SalePrice column
+step3 <- mutate(step2, log_SalePrice=log(SalePrice)) 
+
+# Notice: Each time you are passing the preceding dataframe (first df, then step1...)
+
+step3
+```
+  
+  - The method above contains several steps and it might get hard to follow
+  - Pipes are an alternative to make it easier to pass data and manipulate it with a better format
+  
+```{r}
+# Doing the same procedure using pipes
+pipe_way <- housing_df %>% 
+  select(SalePrice, MSZoning) %>%
+  filter(SalePrice > mean(SalePrice)) %>%
+  mutate(log_SalePrice=log(SalePrice))
+
+# Note: Notice that we do not need to pass the data!
+
+pipe_way
+```
+  - Notice that data is being passed on in each line via **%>%** (pipe operator).
+  - We do not need to pass the data in each step.
+  - It is convenient to use the pipe operator when there are more than one step.
+      
+## Case Study
+
+We are interested to know the effect of remodeling the house on the houses higher than 123, 000 price value:
+
+  1. Getting the rows with price higher than 123e3
+  2. Add new column called years_since_remodel
+  3. Plot two variables
+
+```{r }
+housing_df %>%
+    filter(SalePrice > 123e3) %>% # 1
+    mutate(years_since_remodel = YearRemodAdd - YearBuilt, log_SalePrice=log(SalePrice)) %>% # 2 
+    ggplot(aes(x=years_since_remodel, y=log_SalePrice)) + geom_point() # 2
+```
+    
+# 5. Arrange
+  - Sort dataframe based on given columns
+  - **arrange(A)**: Ascending sort of variable A
+  - **arrange(A, B)**: Ascending sort of variable A and B
+  - **arrange(desc(A), B)/arrange(-A, B)**: Descending sort of variable A and ascending sort of B
+  
+```{r}
+# Ascending sort of housing dataframe based on sale_price
+df %>% arrange(SalePrice) 
+```
+
+```{r}
+# Descending sort of housing dataframe based on sale_price
+df %>% arrange(-SalePrice)
+```
+

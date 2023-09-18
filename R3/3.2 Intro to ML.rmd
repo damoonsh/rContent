@@ -1,0 +1,133 @@
+---
+  title: "Introduction to Machine Learning"
+  author: "TRSM R Team"
+  output: pdf_document
+---
+  
+  ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# What is Machine Learning?
+- The idea that we can automate processes
+- It is done via algorithms that help **Machines** learn
+- In this context machines can be robots, computers, etc.
+
+# How do they work?
+
+- Machine Learning models have to be trained.
+- There is a labeled training data, we will have an input and an output.
+- ML model will relate the input to output.
+
+### Terminology
+
+The values that we are trying to find are denoted as **y_true**, and the values that we have predicted using our model will be named **y_pred** (our predicted y). The difference between these two instances will be the error. If you look at the dataframe sum of our predictions with error will be the actual y values (y_true). The goal is minimize this error value in the dataframe.
+
+```{r message=FALSE}
+library(tidyverse)
+library(ggplot2)
+
+y_true <- rnorm(10, 0, 5)
+y_pred <- y_true + rnorm(10, 1, 5e-1)
+
+error <- y_true - y_pred
+
+data.frame(y_true, y_pred, error)
+```
+#### Loss Function
+
+The loss function is used to determine how accurate our predictions are. They are some popular loss function choices for regression:
+  
+  1. **Mean Absolute Error (MAE)**: Sum of absolute error divided by the number of entries (rows).
+2. **Mean Square Error (MSE)**: Sum of square of error divided by the number of entries (rows).
+3. **Root Mean Square Error (RMSE)**: Root of sum of sqaured error divided by the number of entries (rows).
+
+```{r}
+# MAE
+mae <- function(y_true, y_pred) {
+  sum(abs(y_true - y_pred)) / NROW(y_true)
+}
+
+# MSE
+mse <- function(y_true, y_pred) {
+  sum((y_true - y_pred) ** 2 / NROW(y_true))
+}
+
+# RMSE
+rmse <- function(y_true, y_pred) {
+  sqrt(sum((y_true - y_pred) ** 2 / NROW(y_true)) )
+}
+
+data.frame(mae=mae(y_true, y_pred), mse=mse(y_true, y_pred), rmse=rmse(y_true, y_pred))
+```
+
+These loss functions can be used interchangeably. There is no specific recipe to determine when to use which function? But our goal is to minimize values obtained from these functions so we can have a more accurate model.
+
+## Case Study: Minimizing Error
+
+```{r, echo=FALSE, message=FALSE}
+x1 <- rnorm(100, 1, 1e-2)
+x2 <- rnorm(100, 2, 1)
+x3 <- rnorm(100, 3, 1e-1)
+y_true <- x1 * 2 + x2 * 5 - 3 * x3 + rnorm(100, 1, 0.5)
+
+d <- data.frame(x1,x2,x3,y_true)
+
+write.csv(d, file='Sample.csv')
+```
+
+We are given a dataset (Sample.csv) where there are three features: x1, x2, and x3. We will assign a weight to each of them: w1, w2, w3. Then we alter the weights to get the least error when we compute the y using these features: $w1*x1+w2*x2+w3*x3$.
+
+```{r message=FALSE}
+s <- read_csv('./Sample.csv')
+
+y_pred_1 <- 1 * x1 + 1 * x2 + 1 * x3
+y_pred_2 <- 2 * x1 + 2 * x2 - 1 * x3
+y_pred_3 <- 3 * x1 + 3 * x2 - 2 * x3
+y_pred_4 <- 2 * x1 + 5 * x2 - 3 * x3
+
+preds <- data.frame(s$y_true, y_pred_1,y_pred_2,y_pred_3,y_pred_4)
+head(preds, 5)
+```
+
+The model with the lowest amount of error will be the most accurate one, hence we will look for the weights that yield the minimum error. Looking at the table it is easy to see that the fourth prediction is the most accurate one.
+
+```{r message=FALSE}
+error <- c("MAE", "MSE", "RMSE")
+pred_1_error <- c(mae(s$y_true, y_pred_1), mse(s$y_true, y_pred_1), rmse(s$y_true, y_pred_1))
+pred_2_error <- c(mae(s$y_true, y_pred_2), mse(s$y_true, y_pred_2), rmse(s$y_true, y_pred_2))
+pred_3_error <- c(mae(s$y_true, y_pred_3), mse(s$y_true, y_pred_3), rmse(s$y_true, y_pred_3))
+pred_4_error <- c(mae(s$y_true, y_pred_4), mse(s$y_true, y_pred_4), rmse(s$y_true, y_pred_4))
+
+errors <- data.frame(error, pred_1_error, pred_2_error, pred_3_error, pred_4_error)
+head(errors, 10)
+```
+
+# Mathematical Functions vs Machine Learning
+
+Consider three parts:
+  
+  - ***Input***: Data (number) that enters into a function usually denoted as **x**.
+- ***Output***: Value(s) that come out of a function, denoted as **y**.
+- ***Weight***: Variables within the function that transform the input to output, denoted as **w**.
+
+For instance in $f(x)=x^{2}-2x+10$, any value of x is the input, f(x) is the output and 1, -2, 10 are the weights.
+
+Machine Learning algorithms have the same three components, so ***what is the difference between a ML algorithm and a function?***
+  In functions, we have the x and w but we are looking for y, in ML models, we have x and y, we want to find w. Meaning that we have the input and output but we want to related in a way that we could automate our processes.
+
+
+# Different Type of Machine Learning Algorithm
+
+**Classification**: We have a number of classes and we want to put the given data into a class.
+- We are working on animal classifier algorithm, where any picture is given to us and we decide which animal is present in the picture. The input is a picture and after running through the ML model, we decide if there is a dog, cat, or etc in the picture.
+- Detecting financial fraud.
+
+**Regression**: The goal is to predict one or more numeric values.
+- Using data we predict the stock/Bitcoin price for tomorrow.
+
+
+
+
+
+
