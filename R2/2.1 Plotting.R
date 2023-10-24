@@ -21,15 +21,13 @@ ggplot(housing_df, aes(x = MSSubClass, y = LotArea)) +
 #Movie_profit
 # 1. Scatter Plot Exercise:
 # Exercise 1: Scatter plot of domestic_gross (x) vs worldwide_gross (y)
-ggplot(movie_profit, aes(x = domestic_gross, y = worldwide_gross)) +
-  geom_point()
+
 
 
 #Housing_df
 # Exercise 2: Scatter plot of MasVnrArea (x) vs LotArea (y)
 
-ggplot(housing_df, aes(x = MasVnrArea, y = LotArea)) +
-  geom_point()
+
   
 
 # 2. Line Chart
@@ -38,8 +36,7 @@ ggplot(housing_df, aes(x = YearBuilt, y= SalePrice)) + geom_line()
 #Penguins
 # Exercise 1: Plot the line chart flipper_length_mm as x and body_mass_g as y (from the penguins dataset)
 
-ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g )) +
-  geom_line()
+
 
 
 # 3. Bar Chart
@@ -48,8 +45,6 @@ ggplot(BOD, aes(x=Time, y=demand)) + geom_bar(stat='identity')
 
 #housing_df
 # Exercise 1: Plot LotShape as x for SalePrice bar chart
-ggplot(housing_df, aes(x=LotShape, y = SalePrice)) + geom_bar(stat='identity')
-
 
 # Ex2: Which genre has the most repetitions
 ggplot(movie_profit, aes(x=genre))+ geom_bar()
@@ -72,13 +67,10 @@ ggplot(movie_profit, aes(x = genre, fill = mpaa_rating)) +
 diamond <- diamonds
 
 # Exercise 1: plot clarity column of diamonds dataframe with cut as the fill
-ggplot(diamond, aes(x = clarity, fill = cut)) + 
-  geom_bar(position = 'fill')
 
 
 # Exercise 2: plot clarity column of diamonds dataframe with color as the fill
-ggplot(diamond, aes(x = clarity, fill = color)) + 
-  geom_bar(position = 'fill')
+
 
 # 4. Histogram
 
@@ -97,18 +89,11 @@ ggplot(movie_profit, aes (x=log(worldwide_gross))) +
 # Higher the binwidth, the more grouped/less bars appear on the chart.
 
 
-#Pengiuns
+# Pengiuns
 # Exercise 1: Make a histogram of body_mass_g from penguins
-ggplot(penguins, aes(x = body_mass_g))+
-  geom_histogram(binwidth = 2)
 
 
 # Exercise 2: Make a histogram of body_mass_g from penguins with binwidth=500
-
-ggplot(penguins, aes(x = body_mass_g))+
-  geom_histogram(binwidth = 500)
-
-#Come back at 3:20 pm
 
 
 

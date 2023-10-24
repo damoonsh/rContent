@@ -23,39 +23,29 @@ playground <- read_csv("https://www.dropbox.com/s/1zz4a82514avdeq/playground_inj
 "
 
 # Selecting "SalePrice" and "MSSubClass" columns
-select(housing_df, SalePrice, MSSubClass)
 
 # Selecting columns from MSSubClass to LotFrontage
-select(housing_df, MSSubClass:LotFrontage)
 
 # Selecting columns from MSSubClass to LotFrontage excluding MSZoning
-select(housing_df, MSSubClass:LotFrontage, -MSZoning)
 
 # Selecting all the columns where there contain bsmt in their name
-select(housing_df, contains("bsmt"))
 
 # Various combinations of these options are possible
 # Exercise: Use selection to get the following subsets of housing_df
 
 # 1: 7th to 12th Column
-select(housing_df, 7:12)
 
 
 # 2: 7th to 12th Column excluding columns 8 and Alley
-select(housing_df, 7:12, -8, -Alley)
 
 
 # 3: Columns GarageType to GarageCond
-select(housing_df, GarageType:GarageCond)
 
 
 # 4: Columns GarageType to GarageCond exclusive (excluding GarageType and GarageCond)
-select(housing_df, GarageType:GarageCond, -GarageType, -GarageCond)
-
 
 
 # 5: Columns with bsmt in their names (try not to look at the prior example)
-select(housing_df, contains("bsmt"))
 
 
 
@@ -70,14 +60,12 @@ select(housing_df, contains("bsmt"))
     Note: Negation is also possible within this notation.
 "
 # Filter for houses with over a 3 in overall quality
-filter(housing_df, OverallQual > 3 )
+
 
 # Filter for houses with above median sale prices
-filter(housing_df, SalePrice > median(SalePrice))
 
 
 # Exercise 1: filter for rows with MSSubclass of higher than 20 (HINT: Make sure the variable name is correct)
-filter(housing_df, MSSubClass>20)
 
 
 # Exercise 2: MSSubclass of higher than 20 and SalePrice below average
@@ -134,10 +122,7 @@ pipe_way
         3. Plot two variables
 "
 
-housing_df %>%
-  filter(SalePrice > 123e3) %>% # 1
-  mutate(years_since_remodel = YearRemodAdd - YearBuilt, log_SalePrice=log(SalePrice)) %>% # 2 
-  ggplot(aes(x=years_since_remodel, y=log_SalePrice, colour=Neighborhood)) + geom_point() # 2
+
 
 " 5. Arrange: Sort dataframe based on given columns
     - arrange(A): Ascending sort of variable A

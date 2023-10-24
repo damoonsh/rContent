@@ -21,10 +21,10 @@ housing_df <- read_csv("https://www.dropbox.com/s/tvvtf9dwjufo7os/housing_train.
 # Indexing Exercises:
 
 # 1. Retrieve rows 10-15 of the first 5 columns in housing_df
-housing_df[10:15, 0:5]
+
 
 # 2. Display the value in the thirty-fifth row of the eighteenth column of housing_df
-housing_df[35, 18]
+
 
 
 unique(d$courses)
@@ -44,15 +44,11 @@ nchar("Michael")
 # Exploring Dataframes Exercises:
 
 # 1. What is the average of SalePrice column in housing_df?
-mean(housing_df$SalePrice, na.rm = T)
-# 2. How many rows and columns does the housing_df have?
-nrow(housing_df)
-ncol(housing_df)
 
-dim(housing_df)
+
+# 2. How many rows and columns does the housing_df have?
+
+
 # 3. How many unique values are in the MSSubClass column? 
 #(CHALLENGE: Try and see if you can use a second function to sell you the total number instead of counting
-length(unique(housing_df$MSSubClass))
-
-
 

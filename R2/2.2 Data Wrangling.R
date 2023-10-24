@@ -65,12 +65,6 @@ compared to other sale types.
 "
 
 
-
-housing_df %>%
-  group_by(SaleType) %>%
-  summarise(mean_sale = mean(SalePrice)) %>%
-  arrange(-mean_sale)
-
 " Case Study:
 
 Getting the frequency of different values within the Neighborhood column.
@@ -80,11 +74,7 @@ Getting the frequency of different values within the Neighborhood column.
 3. Sort in descending order based on freq column (where we stored the frequencies)
 4. Filter for the repitions of higher than 80
 "
-housing_df %>%
-  group_by(Neighborhood) %>%
-  summarise(freq=n()) %>%
-  arrange( -freq  ) %>% 
-  filter(freq > 80)
+
 
 
 " Case Study
@@ -97,13 +87,7 @@ We would like to find out which Neghbourhoods have the most repetitions
 (rows) where a certain value in Neighbourhood has been repeated.
 "
 
-housing_df %>%
-  group_by(Neighborhood ) %>%
-  summarise(freq=n()) %>%
-  arrange(-freq) %>%
-  filter(freq > 80) %>%
-   ggplot(housing_df, aes(x=Neighborhood, y=freq, fill=Neighborhood)) + 
-  geom_bar(stat = 'identity')
+
 
 " Case Study: 
 Which playground equipment causes the most injuries?
@@ -114,19 +98,10 @@ Which playground equipment causes the most injuries?
   4. Filter and keep repitions of greater than 1000
 "
 
-playground %>% 
-  group_by(product) %>% # 1
-  summarise(freq = n() ) %>% # 2
-  arrange(-freq)%>% # 3
-  filter(freq > 1000 ) # 4
 
 
 # Exercise: What if we wanted the relative frequency? 
 # (Hint: sum of all the values should equal 1)
-playground %>% 
-  group_by(product) %>% # 1
-  summarise(freq = n()/nrow(playground)) %>% # 2
-  arrange(-freq) # 3
 
 # Plotting the relative frequency of products
 playground %>% 
@@ -146,12 +121,7 @@ playground %>%
 # 1. Filter data by slides
 # 2. Calculate the relative frequency of the data
 # 3. Choose the entries with injury == HEAD
-playground %>% 
-  filter(product == 'Slides') %>%  # 1
-  group_by(body_label) %>% # 2.1
-  summarise(freq=n()) %>%  # 2.2
-  mutate(freq=freq/sum(freq)*100) %>% # 2.3
-  filter(body_label == 'HEAD') # 3
+
 
 View(playground)
 
@@ -159,13 +129,6 @@ View(playground)
 # 1. Filter by injury_label of dislocation
 # 2. Make a column to count the number dislocations for each product
 # 3. Sort in the descending order 
-playground %>%
-  filter(injury_label == 'DISLOCATION') %>%
-  group_by(product) %>%
-  summarise(freq=n()) %>%
-  arrange(-freq)
-
-
 
 
 # Exercise: What playground injury is most common for people over 30 years old?
@@ -173,44 +136,21 @@ playground %>%
 # 2. Count the number for each injury
 # 3. Sort in the descending order
 
-playground %>% 
-  filter(age > 30) %>%
-  group_by(injury_label) %>%
-  summarise(freq=n()) %>%
-  arrange(-freq)
-
 
 
 housing_df <- read_csv("https://www.dropbox.com/s/tvvtf9dwjufo7os/housing_train.csv?dl=1")
 
 # Exercise: What is the average SalePrice for each unique value in Alley column?
-housing_df %>%
-  group_by(Alley) %>%
-  summarise(ms=mean(SalePrice))
+
 
 # And what is the maximum value of LotFrontage for each unique value in Alley?
-housing_df %>%
-  group_by(Alley) %>%
-  summarise(s=max(LotFrontage, na.rm = T))
+
 
 # Exercise: Exercise: What is the maximum SalePrice for each unique value in Alley column?
 # And what is the most repeated value of OverQual for each unique value in Alley?
-housing_df %>%
-  group_by(Alley) %>%
-  summarise(s=max(SalePrice), m=median(OverallQual))
+
 
 # Exercise: Get the mean price and mode of OverQual for each of the unique values
 # in Alley then sort in descending order based on Average SalePrice
-
-housing_df %>%
-  group_by(Alley) %>%
-  summarise(s=max(SalePrice), m=median(OverallQual)) %>%
-  arrange(-s)
-
-
-
-
-
-
 
 
